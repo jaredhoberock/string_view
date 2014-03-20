@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <iterator>
 #include <cstring>
@@ -17,18 +19,18 @@ template<class charT, class traits = std::char_traits<charT>>
 class basic_string_view
 {
   public:
-    typedef traits                           traits_type;
-    typedef charT                            value_type;
-    typedef charT*                           pointer;
-    typedef const charT*                     const_pointer;
-    typedef charT&                           reference;
-    typedef const charT&                     const_reference;
-    typedef const_pointer                    const_iterator;
-    typedef const_iterator                   iterator;
-    typedef reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef const_reverse_iterator           reverse_iterator;
-    typedef size_t                           size_type;
-    typedef ptrdiff_t                        difference_type;
+    typedef traits                                traits_type;
+    typedef charT                                 value_type;
+    typedef charT*                                pointer;
+    typedef const charT*                          const_pointer;
+    typedef charT&                                reference;
+    typedef const charT&                          const_reference;
+    typedef const_pointer                         const_iterator;
+    typedef const_iterator                        iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef const_reverse_iterator                reverse_iterator;
+    typedef size_t                                size_type;
+    typedef ptrdiff_t                             difference_type;
 
     static const size_type npos = size_type(-1);
 
@@ -41,13 +43,14 @@ class basic_string_view
     {}
 
     basic_string_view& operator=(const basic_string_view& other)
-      : data_(other.data()), size_(other.size())
     {
+      data_ = other.data();
+      size_ = other.size();
       return *this;
     }
 
     template<class Allocator>
-    basic_string_view(const basic_string_view<charT, traits, Allocator>& str)
+    basic_string_view(const basic_string<charT, traits, Allocator>& str)
       : data_(str.data()), size_(str.size())
     {}
 
@@ -176,7 +179,7 @@ class basic_string_view
     template<class Allocator = allocator<charT>>
     basic_string<charT, traits, Allocator> to_string(const Allocator& a = Allocator()) const
     {
-      return basic_string<charT, traits, Allocator>(begin(), end, a);
+      return basic_string<charT, traits, Allocator>(begin(), end(), a);
     }
 
     size_type copy(charT* s, size_type n, size_type pos = 0) const
@@ -272,7 +275,7 @@ bool operator>=(basic_string_view<T,traits> lhs, basic_string_view<T,traits> rhs
   return lhs.compare(rhs) >= 0;
 }
 
-template<class T, class traits>
+template<class charT, class traits>
 basic_ostream<charT,traits>& operator<<(basic_ostream<charT,traits> &os, basic_string_view<charT,traits> &str)
 {
   return os << str.to_string();
